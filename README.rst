@@ -19,5 +19,5 @@ Installation
 2. syncdb and migrate
 3. create a new page, and set the Event application to handle that page
 4. create events in the admin
-   
+
 Optionally add the Event listings plugin to other pages.
