@@ -4,8 +4,6 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from filer.fields.image import FilerImageField
 
-from model_utils.models import TimeStampedModel
-
 
 class Category(models.Model):
     name = models.CharField(_('Name'), max_length=50)
@@ -23,7 +21,7 @@ class CurrentEventManager(models.Manager):
         return super(CurrentEventManager, self).get_queryset().filter(event_end__gt=datetime.now())
 
 
-class Event(TimeStampedModel):
+class Event(models.Model):
     title = models.CharField(_('Title'), max_length=50)
     description = models.TextField(_('Description'))
     event_start = models.DateTimeField(_('Start time'), blank=True)
