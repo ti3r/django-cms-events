@@ -18,5 +18,5 @@ class EventList(CMSPluginBase):
         return SekizaiContext({
             'object_list': object_list,
             'instance': instance
-            })
+        })
 plugin_pool.register_plugin(EventList)

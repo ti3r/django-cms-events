@@ -29,11 +29,11 @@ class CurrentEventManager(models.Manager):
 class Event(models.Model):
     title = models.CharField(_('Title'), max_length=50)
     description = models.TextField(_('Description'))
-    event_start = models.DateTimeField(_('Start time'), blank=True)
-    event_end = models.DateTimeField(_('End time'), blank=True)
+    event_start = models.DateTimeField(_('Start time'), null=True, blank=True)
+    event_end = models.DateTimeField(_('End time'), null=True, blank=True)
     location = models.CharField(_('Location'), max_length=50, blank=True)
     image = FilerImageField(null=True, blank=True, default=None, verbose_name=_("Image"))
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, null=True, blank=True)
     facebook_url = models.URLField(_('Facebook link'), blank=True)
 
     objects = models.Manager()
