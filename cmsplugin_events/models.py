@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext as _
+
 from filer.fields.image import FilerImageField
 
 
@@ -18,7 +20,10 @@ class Category(models.Model):
 class CurrentEventManager(models.Manager):
 
     def get_queryset(self):
-        return super(CurrentEventManager, self).get_queryset().filter(event_end__gt=datetime.now())
+        return super(CurrentEventManager, self).get_queryset().filter(
+            timezone.make_aware(
+                event_end__gt=datetime.now(), timezone.get_current_timezone()
+            )
 
 
 class Event(models.Model):
@@ -42,7 +47,7 @@ class Event(models.Model):
         return 'event_details', (), {'pk': self.pk}
 
     def __unicode__(self):
-        return self.title 
+        return self.title
 
 try:
     from cms.models import CMSPlugin
