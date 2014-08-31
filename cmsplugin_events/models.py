@@ -23,7 +23,7 @@ class CurrentEventManager(models.Manager):
         return super(CurrentEventManager, self).get_queryset().filter(
             timezone.make_aware(
                 event_end__gt=datetime.now(), timezone.get_current_timezone()
-            )
+            ))
 
 
 class Event(models.Model):
