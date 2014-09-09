@@ -37,6 +37,6 @@ setup(
     test_suite="runtests.runtests",
     zip_safe=False,
     install_requires=[
-        'Django>=1.4,<2',
+        'Django>=1.4,<1.7',
     ]
 )
