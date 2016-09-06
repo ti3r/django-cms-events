@@ -11,7 +11,7 @@ class EventRegistryAdmin(admin.ModelAdmin):
     Registry Admin View to check the registrations for a specific event
     """
     list_filter = ('event',)
-    list_display = ('name','email','event')
+    list_display = ('name','email','event', 'date',)
     actions = [export_csv]
 
 
