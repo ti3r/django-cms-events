@@ -1,8 +1,8 @@
-{% load i18n %}
+{% load i18n cms_tags %}
 <ul>
 	{% for object in object_list %}
 		<li><a href="{{object.get_absolute_url}}">{{object.title}}</a></li>
 	{% empty %}
-		<li>{% trans "No comeing events" %}</li>
+		<li>{% trans "No coming events" %}</li>
 	{% endfor %}
 </ul>
