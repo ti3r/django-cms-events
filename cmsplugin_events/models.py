@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 import datetime
 from filer.fields.image import FilerImageField
+from django.core import urlresolvers
 
 
 class Category(models.Model):
@@ -24,7 +25,6 @@ class CurrentEventManager(models.Manager):
                 datetime.datetime.now(), timezone.get_current_timezone()
             ))
 
-
 class MonthEventManager(models.Manager):
     """
     Event manager to return the events ocurring in a specified month
@@ -40,6 +40,13 @@ class MonthEventManager(models.Manager):
             .filter(event_end__lte=month_end)
 
 
+class CategoryEventManager(models.Manager):
+    """
+    Model manager for the Event class that will filter the results by a specified category
+    """
+    def find(self,category):
+        return super(CategoryEventManager,self).get_queryset().filter(category=category)
+
 class Event(models.Model):
     title = models.CharField(_('Title'), max_length=50)
     description = models.TextField(_('Description'))
@@ -53,6 +60,7 @@ class Event(models.Model):
     objects = models.Manager()
     ongoing = CurrentEventManager()
     month = MonthEventManager()
+    by_category = CategoryEventManager()
 
     class Meta:
         ordering = ['event_start']
@@ -93,14 +101,19 @@ class EventRegistry(models.Model):
         ev = request.POST['event']
         event = Event.objects.get(id=ev)
 
-        return EventRegistry.objects.create(name=n,email=e,event=event)
-
+        return EventRegistry.objects.create(name=n, email=e, event=event)
 
 
 class EventRegistryPlugin(CMSPlugin):
-    message = models.CharField(verbose_name=_('Message'), help_text=_('Message to display after submit'), null=True,
-                               blank=True, max_length=512)
+    """
+    Model class to store the configuration of the EventRegistrationPlugin plugin
+    """
     title = models.CharField(verbose_name=_('Title'), help_text=_('Title to display on top of submission form'),
                              null=True, blank=True, max_length=512)
+    message = models.CharField(verbose_name=_('Message'), help_text=_('Message to display after submit'), null=True,
+                               blank=True, max_length=512)
     send_message = models.CharField(verbose_name=_('Submit Test'), help_text=_('Text to display in submit button'),
-                                    null=True,blank=True,max_length=30)
+                                    null=True, blank=True, max_length=30)
+    category_filter = models.ForeignKey(Category,null=True, blank=True, verbose_name=_('Categories Filter'),
+                                        help_text=_('Only events in this category will be displayed as available for '
+                                                    'registration'))

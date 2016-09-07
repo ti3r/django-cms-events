@@ -1,13 +1,15 @@
 from sekizai.context import SekizaiContext
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 import datetime
-
 from models import EventListPlugin, EventRegistryPlugin, Event, EventRegistry
 
+
 class EventList(CMSPluginBase):
+    """
+    Plugin Class to render the list of ongoing events
+    """
     model = EventListPlugin
     name = _('Event list')
     render_template = 'cmsplugin_events/event_list_plugin.html'
@@ -17,7 +19,7 @@ class EventList(CMSPluginBase):
         object_list = Event.ongoing.all()
         if instance.category:
             object_list = object_list.filter(category=instance.category)
-        uctx = SekizaiContext({'object_list': object_list,'instance': instance})
+        context.update({'object_list': object_list,'instance': instance})
         return super(EventList,self).render(context, instance, placeholder)
 
 plugin_pool.register_plugin(EventList)
@@ -48,7 +50,11 @@ class EventRegistrationPlugin(CMSPluginBase):
             EventRegistry.from_request(request)
             context.update({'submitted':True})
         else:
-            events = Event.ongoing.all()
+            events = None
+            if instance.category_filter:
+                events = Event.by_category.find(instance.category_filter)
+            else:
+                events = Event.ongoing.all()
             uctx = SekizaiContext({'events':events})
             context.update(uctx)
 
